@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import './App.css';
-import {FirstLayer} from './Components/FirstLayer';
 import {ITheme, ThemeContext} from './ThemeContext';
 import {Button} from './Button';
 
