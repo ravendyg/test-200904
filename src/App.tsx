@@ -1,59 +1,55 @@
-import React, {useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import './App.css';
-import {FirstLayer} from './Components/FirstLayer';
-import {ITheme, ThemeContext} from './ThemeContext';
-import {Button} from './Button';
+import {Section} from './Components/Section';
+import {ICard} from './Components/Card';
+import {CardsContex} from './CardsContext';
 
-
-const themes: ITheme[] = [
+const defaultCards: ICard[] = [
   {
-    name: 'Light',
-    background: 'white',
-    buttonBack: 'black',
-    buttonColor: 'white',
-  },
-  {
-    name: 'Dark',
-    background: 'black',
-    buttonBack: 'white',
-    buttonColor: 'black',
-  },
-  {
-    name: 'Blue',
-    background: 'lightblue',
-    buttonBack: 'grey',
-    buttonColor: 'black',
-  },
+    id: 'btn1',
+    text: 'This is the text of first card',
+    img: 'https://picsum.photos/300/300',
+    buttonLabel: 'Click me to refresh the page',
+  }, {
+    id: 'btn2',
+    text: 'This is the text of the card that follows',
+    img: 'https://picsum.photos/300/300',
+    buttonLabel: 'Click me to turn first card background blue',
+  }
 ];
 
-function nextIndex(currentIndex: number) {
-  let newIndex = currentIndex + 1;
-  if (newIndex >= themes.length) {
-    newIndex = 0;
-  }
-  return newIndex;
-}
-
 function App() {
-  const [themeIndex, setThemeIndex] = useState(0);
-  const gotoNext = () => {
-    setThemeIndex(nextIndex(themeIndex));
-  };
-  const style = {
-    backgroundColor: themes[themeIndex].background,
-  };
+  const [cards, setCards] = useState(defaultCards);
+  const triggerCardAction = useCallback((id: string) => {
+    switch (id) {
+      case defaultCards[0].id: {
+        window.location.reload();
+        break;
+      }
+      case defaultCards[1].id: {
+        setCards(cards.map(card => {
+          if (card.id === id) {
+            return {
+              ...card,
+              background: 'blue',
+            };
+          }
+          return card;
+        }));
+        break;
+      }
+    }
+  }, []);
+  const contextValue = useMemo(() => ({
+    cards,
+    triggerCardAction,
+  }), [cards, triggerCardAction]);
 
-  return (
-    <ThemeContext.Provider value={{
-      current: themes[themeIndex],
-      nextName: themes[nextIndex(themeIndex)].name,
-      gotoNext,
-    }}>
-      <div className="App" style={style}>
-        <Button/>
-      </div>
-    </ThemeContext.Provider>
-  );
+  return <CardsContex.Provider value={contextValue}>
+    <Section
+      title='Card Component'
+    />
+  </CardsContex.Provider>;
 }
 
 export default App;
