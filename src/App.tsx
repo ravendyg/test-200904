@@ -1,55 +1,29 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {ChangeEvent} from 'react';
 import './App.css';
-import {Section} from './Components/Section';
-import {ICard} from './Components/Card';
-import {CardsContex} from './CardsContext';
 
-const defaultCards: ICard[] = [
-  {
-    id: 'btn1',
-    text: 'This is the text of first card',
-    img: 'https://picsum.photos/300/300',
-    buttonLabel: 'Click me to refresh the page',
-  }, {
-    id: 'btn2',
-    text: 'This is the text of the card that follows',
-    img: 'https://picsum.photos/300/300',
-    buttonLabel: 'Click me to turn first card background blue',
+
+class App extends React.Component {
+  state = {
+    value: localStorage.getItem("info") || ""
+  };
+
+  componentDidUpdate() {
+    localStorage.setItem("info", this.state.value);
   }
-];
 
-function App() {
-  const [cards, setCards] = useState(defaultCards);
-  const triggerCardAction = useCallback((id: string) => {
-    switch (id) {
-      case defaultCards[0].id: {
-        window.location.reload();
-        break;
-      }
-      case defaultCards[1].id: {
-        setCards(cards.map(card => {
-          if (card.id === id) {
-            return {
-              ...card,
-              background: 'blue',
-            };
-          }
-          return card;
-        }));
-        break;
-      }
-    }
-  }, []);
-  const contextValue = useMemo(() => ({
-    cards,
-    triggerCardAction,
-  }), [cards, triggerCardAction]);
+  onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    this.setState({value: event.target.value});
+  };
 
-  return <CardsContex.Provider value={contextValue}>
-    <Section
-      title='Card Component'
-    />
-  </CardsContex.Provider>;
-}
+  render() {
+    const {value} = this.state;
+    return (
+      <div>
+        <input value={value} type="text" onChange={this.onChange} />
+        <p>{value}</p>
+      </div>
+    );
+  }
+};
 
 export default App;
