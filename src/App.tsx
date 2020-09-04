@@ -1,25 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import {FirstLayer} from './Components/FirstLayer';
+import {ITheme, ThemeContext} from './ThemeContext';
+import {Button} from './Button';
+
+
+const themes: ITheme[] = [
+  {
+    name: 'Light',
+    background: 'white',
+    buttonBack: 'black',
+    buttonColor: 'white',
+  },
+  {
+    name: 'Dark',
+    background: 'black',
+    buttonBack: 'white',
+    buttonColor: 'black',
+  },
+  {
+    name: 'Blue',
+    background: 'lightblue',
+    buttonBack: 'grey',
+    buttonColor: 'black',
+  },
+];
+
+function nextIndex(currentIndex: number) {
+  let newIndex = currentIndex + 1;
+  if (newIndex >= themes.length) {
+    newIndex = 0;
+  }
+  return newIndex;
+}
 
 function App() {
+  const [themeIndex, setThemeIndex] = useState(0);
+  const gotoNext = () => {
+    setThemeIndex(nextIndex(themeIndex));
+  };
+  const style = {
+    backgroundColor: themes[themeIndex].background,
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeContext.Provider value={{
+      current: themes[themeIndex],
+      nextName: themes[nextIndex(themeIndex)].name,
+      gotoNext,
+    }}>
+      <div className="App" style={style}>
+        <Button/>
+      </div>
+    </ThemeContext.Provider>
   );
 }
 
