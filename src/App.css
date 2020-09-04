@@ -1,10 +1,11 @@
+@import '~antd/dist/antd.css';
+
 .App {
+  margin: 16px auto;
   text-align: center;
   height: 100%;
-  widows: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  max-width: 500px;
 }
 
 .App-logo {
@@ -40,4 +41,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.ant-form-item-with-help {
+  margin-bottom: 24px;
 }
